@@ -22,67 +22,55 @@ pnpm monorepo with a [Roots Bedrock](https://roots.io/bedrock/) backend and a [N
 
 ## First-time Setup
 
-### 1. Configure ACF Pro
+```bash
+make setup
+```
 
-Copy the Composer auth template and insert your ACF Pro license key:
+This single command will:
+1. Check that `pnpm`, `composer`, and `docker` are installed
+2. Copy `.env.example` files (and remind you to fill in WP salts)
+3. Create `apps/cms/auth.json` from the example and **pause** so you can add your ACF Pro license key
+4. Run `composer install` in `apps/cms`
+5. Run `pnpm install` at the workspace root
+6. Build and start the Docker containers (WordPress on `:8080`)
+
+After `make setup`, open **http://localhost:8080** to finish the WordPress install wizard, then activate:
+- **Headless Redirect** theme
+- **WPGraphQL**, **WPGraphQL for ACF**, **Advanced Custom Fields PRO** plugins
+
+### Manual steps (if you prefer)
 
 ```bash
+# ACF Pro Composer auth
 cp apps/cms/auth.json.example apps/cms/auth.json
 # Edit apps/cms/auth.json — replace YOUR_ACF_PRO_LICENSE_KEY
-```
 
-### 2. Configure environment files
-
-```bash
-cp apps/cms/.env.example apps/cms/.env
+# Environment files
+cp apps/cms/.env.example apps/cms/.env   # add WP salts
 cp apps/web/.env.example apps/web/.env
-# Edit both files as needed (salts, DB passwords, etc.)
-```
 
-Generate WP salts at https://roots.io/salts.html and paste them into `apps/cms/.env`.
-
-### 3. Install PHP dependencies
-
-```bash
+# Dependencies
 cd apps/cms && composer install && cd ../..
-```
-
-### 4. Install JS dependencies
-
-```bash
 pnpm install
-```
 
-### 5. Start the CMS (WordPress + MySQL)
-
-```bash
+# Start CMS
 pnpm cms:up
 ```
-
-Open http://localhost:8080 to complete the WordPress installation wizard.
-- Set the site URL to `http://localhost:8080`
-- Activate the **Headless Redirect** theme
-- Activate plugins: **WPGraphQL**, **WPGraphQL for ACF**, **Advanced Custom Fields PRO**
-
-### 6. Start the Nuxt dev server
-
-```bash
-pnpm dev
-```
-
-Frontend is available at http://localhost:3000.
 
 ## Daily Development
 
 | Command | Description |
 |---|---|
-| `pnpm dev` | Start Nuxt dev server |
-| `pnpm build` | Build Nuxt for production |
-| `pnpm preview` | Preview production build |
-| `pnpm cms:up` | Start WordPress (Docker) |
-| `pnpm cms:down` | Stop WordPress |
-| `pnpm cms:logs` | Tail WordPress logs |
-| `pnpm cms:fresh` | Wipe DB volumes and restart |
+| `make dev` | Start Nuxt dev server |
+| `make build` | Build Nuxt for production |
+| `make preview` | Preview production build |
+| `make cms-up` | Start WordPress (Docker) |
+| `make cms-down` | Stop WordPress |
+| `make cms-logs` | Tail WordPress logs |
+| `make cms-fresh` | Wipe DB volumes and restart |
+| `make cms-shell` | Shell into the PHP container |
+| `make clean` | Remove build artifacts |
+| `make reset` | Stop + clean everything |
 
 ## Architecture
 
