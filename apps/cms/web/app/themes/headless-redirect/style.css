@@ -1,0 +1,7 @@
+/*
+ Theme Name: Headless Redirect
+ Theme URI: https://github.com/your-org/headless-wp-poc
+ Description: Minimal theme that redirects all public frontend requests to the Nuxt frontend. Keeps WP admin, REST API, and GraphQL endpoint accessible.
+ Version: 1.0.0
+ Author: Headless WP PoC
+*/

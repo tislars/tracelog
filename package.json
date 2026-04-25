@@ -1,0 +1,14 @@
+{
+  "name": "headless-wp-poc",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "dev": "pnpm --filter web dev",
+    "build": "pnpm --filter web build",
+    "preview": "pnpm --filter web preview",
+    "cms:up": "docker compose -f apps/cms/docker-compose.yml up -d",
+    "cms:down": "docker compose -f apps/cms/docker-compose.yml down",
+    "cms:logs": "docker compose -f apps/cms/docker-compose.yml logs -f",
+    "cms:fresh": "docker compose -f apps/cms/docker-compose.yml down -v && pnpm cms:up"
+  }
+}

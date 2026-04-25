@@ -1,0 +1,10 @@
+{
+  "name": "cms",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "up": "docker compose up -d",
+    "down": "docker compose down",
+    "logs": "docker compose logs -f"
+  }
+}

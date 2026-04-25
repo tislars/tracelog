@@ -1,0 +1,33 @@
+# Node
+node_modules/
+.pnpm-debug.log
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# Nuxt
+apps/web/.nuxt/
+apps/web/.output/
+apps/web/dist/
+apps/web/node_modules/
+
+# Bedrock / WordPress
+apps/cms/vendor/
+apps/cms/web/wp/
+apps/cms/web/app/uploads/
+apps/cms/.env
+!apps/cms/.env.example
+
+# Docker
+apps/cms/docker/mysql-data/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.idea/
+.vscode/
+*.swp
