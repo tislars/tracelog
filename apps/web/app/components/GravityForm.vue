@@ -66,10 +66,17 @@ async function handleSubmit() {
   submitting.value = true
   submitError.value = null
 
-  const fieldValues = Object.entries(values.value).map(([id, value]) => ({
-    id: Number(id),
-    value,
-  }))
+  // Build field values — email fields require emailValues wrapper
+  const fieldMap = Object.fromEntries(
+    props.form.formFields.nodes.map((f) => [f.id, f.type]),
+  )
+  const fieldValues = Object.entries(values.value).map(([id, value]) => {
+    const numId = Number(id)
+    if (fieldMap[numId] === 'EMAIL') {
+      return { id: numId, emailValues: { value } }
+    }
+    return { id: numId, value }
+  })
 
   try {
     const res = await $fetch<{ data: GfSubmitResult; errors?: { message: string }[] }>(

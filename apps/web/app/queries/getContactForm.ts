@@ -149,5 +149,6 @@ export interface GetGfFormResult {
 
 export interface FormFieldValue {
   id: number
-  value: string
+  value?: string
+  emailValues?: { value: string; confirmationValue?: string }
 }
