@@ -79,7 +79,7 @@ async function handleSubmit() {
         headers: { 'Content-Type': 'application/json' },
         body: {
           query: GF_SUBMIT_FORM,
-          variables: { formId: props.form.databaseId, fieldValues },
+          variables: { formId: String(props.form.databaseId), fieldValues },
         },
       },
     )

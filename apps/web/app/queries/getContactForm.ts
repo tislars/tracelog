@@ -78,7 +78,7 @@ export const GF_GET_FORM = /* GraphQL */ `
 // ── Submit mutation ───────────────────────────────────────────────────────────
 
 export const GF_SUBMIT_FORM = /* GraphQL */ `
-  mutation SubmitGfForm($formId: Int!, $fieldValues: [FormFieldValuesInput]!) {
+  mutation SubmitGfForm($formId: ID!, $fieldValues: [FormFieldValuesInput]!) {
     submitGfForm(input: {
       id: $formId
       fieldValues: $fieldValues
