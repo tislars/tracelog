@@ -1,12 +1,7 @@
 /**
- * Fetches a WordPress page or post by its URI, including all ACF editor blocks.
- *
- * Inline fragments cover the three PoC block types:
- *   - AcfHeroBlock
- *   - AcfTextContentBlock
- *   - AcfImageGalleryBlock
- *
- * Add new block fragments here as blocks are registered in WordPress.
+ * Fetches a WordPress page or post by its URI, including all editor blocks.
+ * Core blocks with typed attributes: CoreParagraph, CoreHeading, CoreList.
+ * All other blocks fall back to renderedHtml.
  */
 export const GET_NODE_BY_URI = /* GraphQL */ `
   query GetNodeByUri($uri: String!) {
@@ -17,6 +12,9 @@ export const GET_NODE_BY_URI = /* GraphQL */ `
       ... on Page {
         id
         title
+        seo {
+          ...SeoFields
+        }
         editorBlocks(flat: false) {
           ...BlockFields
         }
@@ -25,11 +23,23 @@ export const GET_NODE_BY_URI = /* GraphQL */ `
       ... on Post {
         id
         title
+        seo {
+          ...SeoFields
+        }
         editorBlocks(flat: false) {
           ...BlockFields
         }
       }
     }
+  }
+
+  fragment SeoFields on SeoMeta {
+    title
+    description
+    robots
+    canonical
+    ogTitle
+    ogDescription
   }
 
   fragment BlockFields on EditorBlock {
@@ -38,39 +48,26 @@ export const GET_NODE_BY_URI = /* GraphQL */ `
     clientId
     parentClientId
     isDynamic
+    renderedHtml
 
-    ... on AcfHeroBlock {
-      acf {
-        heading
-        subheading
-        backgroundImage {
-          sourceUrl
-          altText
-          mediaDetails {
-            width
-            height
-          }
-        }
+    ... on CoreParagraph {
+      attributes {
+        content
       }
     }
 
-    ... on AcfTextContentBlock {
-      acf {
-        body
+    ... on CoreHeading {
+      attributes {
+        content
+        level
+        textAlign
       }
     }
 
-    ... on AcfImageGalleryBlock {
-      acf {
-        caption
-        images {
-          sourceUrl
-          altText
-          mediaDetails {
-            width
-            height
-          }
-        }
+    ... on CoreList {
+      attributes {
+        ordered
+        values
       }
     }
   }
@@ -78,53 +75,51 @@ export const GET_NODE_BY_URI = /* GraphQL */ `
 
 // ── Response shape ──────────────────────────────────────────────────────────
 
-export interface BackgroundImage {
-  sourceUrl: string
-  altText: string
-  mediaDetails?: { width: number; height: number }
+export interface SeoMeta {
+  title?: string
+  description?: string
+  robots?: string
+  canonical?: string
+  ogTitle?: string
+  ogDescription?: string
 }
 
-export interface AcfHeroBlockData {
-  __typename: 'AcfHeroBlock'
+// Core blocks
+export interface CoreParagraphBlockData {
+  __typename: 'CoreParagraph'
   name: string
   clientId: string
   parentClientId: string | null
   isDynamic: boolean
-  acf: {
-    heading?: string
-    subheading?: string
-    backgroundImage?: BackgroundImage
-  }
+  renderedHtml?: string
+  attributes: { content?: string }
 }
 
-export interface AcfTextContentBlockData {
-  __typename: 'AcfTextContentBlock'
+export interface CoreHeadingBlockData {
+  __typename: 'CoreHeading'
   name: string
   clientId: string
   parentClientId: string | null
   isDynamic: boolean
-  acf: {
-    body?: string
-  }
+  renderedHtml?: string
+  attributes: { content?: string; level?: number; textAlign?: string }
 }
 
-export interface AcfImageGalleryBlockData {
-  __typename: 'AcfImageGalleryBlock'
+export interface CoreListBlockData {
+  __typename: 'CoreList'
   name: string
   clientId: string
   parentClientId: string | null
   isDynamic: boolean
-  acf: {
-    caption?: string
-    images?: BackgroundImage[]
-  }
+  renderedHtml?: string
+  attributes: { ordered?: boolean; values?: string }
 }
 
 export type EditorBlock =
-  | AcfHeroBlockData
-  | AcfTextContentBlockData
-  | AcfImageGalleryBlockData
-  | { __typename: string; name: string; clientId: string; [key: string]: unknown }
+  | CoreParagraphBlockData
+  | CoreHeadingBlockData
+  | CoreListBlockData
+  | { __typename: string; name: string; clientId: string; renderedHtml?: string; [key: string]: unknown }
 
 export interface WpNodeBase {
   __typename: string
@@ -135,6 +130,7 @@ export interface WpPage extends WpNodeBase {
   __typename: 'Page'
   id: string
   title: string
+  seo?: SeoMeta
   editorBlocks: EditorBlock[]
 }
 
@@ -142,6 +138,7 @@ export interface WpPost extends WpNodeBase {
   __typename: 'Post'
   id: string
   title: string
+  seo?: SeoMeta
   editorBlocks: EditorBlock[]
 }
 

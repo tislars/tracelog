@@ -14,6 +14,7 @@ RUN apt-get update && apt-get install -y \
 
 RUN docker-php-ext-configure gd --with-jpeg --with-webp \
     && docker-php-ext-install \
+        mysqli \
         pdo_mysql \
         gd \
         exif \

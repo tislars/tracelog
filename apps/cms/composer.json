@@ -17,7 +17,14 @@
     }
   ],
   "keywords": [
-    "bedrock", "composer", "roots", "wordpress-composer", "wordpress", "wp-composer", "wp-config", "wp"
+    "bedrock",
+    "composer",
+    "roots",
+    "wordpress-composer",
+    "wordpress",
+    "wp-composer",
+    "wp-config",
+    "wp"
   ],
   "support": {
     "issues": "https://github.com/roots/bedrock/issues",
@@ -25,37 +32,54 @@
   },
   "repositories": [
     {
-      "name": "wp-packages",
+      "name": "gf-wpgraphql",
+      "type": "vcs",
+      "url": "https://github.com/AxeWP/wp-graphql-gravity-forms"
+    },
+    {
+      "name": "wpackagist",
       "type": "composer",
-      "url": "https://repo.wp-packages.org",
+      "url": "https://wpackagist.org",
       "only": [
-        "wp-plugin/*",
-        "wp-theme/*"
+        "wpackagist-plugin/*",
+        "wpackagist-theme/*"
       ]
     },
     {
       "name": "acf",
       "type": "composer",
       "url": "https://connect.advancedcustomfields.com"
+    },
+    {
+      "type": "vcs",
+      "url": "https://github.com/wpengine/wp-graphql-content-blocks"
+    },
+    {
+      "type": "composer",
+      "url": "https://satis.harborn.dev/"
     }
   ],
   "require": {
-    "php": ">=8.3",
+    "php": ">=8.2",
     "composer/installers": "^2.2",
+    "connectholland/gravityforms": "*",
+    "harness-software/wp-graphql-gravity-forms": "^0.13",
     "oscarotero/env": "^2.1",
     "roots/bedrock-autoloader": "^1.0",
     "roots/bedrock-disallow-indexing": "^2.0",
     "roots/wordpress": "6.9.4",
     "roots/wp-config": "1.0.0",
     "vlucas/phpdotenv": "^5.5",
-    "wp-plugin/wp-graphql": "^1.0",
-    "wp-plugin/wp-graphql-acf": "^2.0",
+    "wpackagist-plugin/seo-by-rank-math": "^1.0",
+    "wpackagist-plugin/wp-graphql": "^2.0",
+    "wpackagist-plugin/wpgraphql-acf": "^2.0",
+    "wpackagist-theme/twentytwentyfive": "^1.0",
     "wpengine/advanced-custom-fields-pro": "^6.0",
-    "wp-theme/twentytwentyfive": "^1.0"
+    "wpengine/wp-graphql-content-blocks": "^4.8"
   },
   "require-dev": {
     "laravel/pint": "^1.27",
-    "pestphp/pest": "^4.0"
+    "pestphp/pest": "^3.0"
   },
   "config": {
     "optimize-autoloader": true,
