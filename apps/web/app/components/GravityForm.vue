@@ -25,8 +25,8 @@ const submitted = ref(false)
 // Initialise values map from form fields
 watchEffect(() => {
   props.form.formFields.nodes.forEach((field) => {
-    if (!(field.id in values.value)) {
-      values.value[field.id] = ''
+    if (!(field.databaseId in values.value)) {
+      values.value[field.databaseId] = ''
     }
   })
 })
@@ -38,17 +38,17 @@ function validate(): boolean {
   let valid = true
 
   for (const field of props.form.formFields.nodes) {
-    if (field.isRequired && !values.value[field.id]?.trim()) {
-      errors.value[field.id] =
+    if (field.isRequired && !values.value[field.databaseId]?.trim()) {
+      errors.value[field.databaseId] =
         field.errorMessage || `${field.label ?? 'This field'} is required.`
       valid = false
     }
     if (
       field.type === 'EMAIL' &&
-      values.value[field.id] &&
-      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.value[field.id])
+      values.value[field.databaseId] &&
+      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.value[field.databaseId])
     ) {
-      errors.value[field.id] = 'Please enter a valid email address.'
+      errors.value[field.databaseId] = 'Please enter a valid email address.'
       valid = false
     }
   }
@@ -68,7 +68,7 @@ async function handleSubmit() {
 
   // Build field values — email fields require emailValues wrapper
   const fieldMap = Object.fromEntries(
-    props.form.formFields.nodes.map((f) => [f.id, f.type]),
+    props.form.formFields.nodes.map((f) => [f.databaseId, f.type]),
   )
   const fieldValues = Object.entries(values.value).map(([id, value]) => {
     const numId = Number(id)
@@ -143,10 +143,10 @@ async function handleSubmit() {
   <form v-else class="gf-form" novalidate @submit.prevent="handleSubmit">
     <div
       v-for="field in form.formFields.nodes"
-      :key="field.id"
+      :key="field.databaseId"
       class="gf-field"
     >
-      <label :for="`field-${field.id}`" class="gf-label">
+      <label :for="`field-${field.databaseId}`" class="gf-label">
         {{ field.label }}
         <span v-if="field.isRequired" class="gf-required" aria-hidden="true">*</span>
       </label>
@@ -158,39 +158,39 @@ async function handleSubmit() {
       <!-- Text / Email / Phone -->
       <input
         v-if="['TEXT', 'EMAIL', 'PHONE'].includes(field.type)"
-        :id="`field-${field.id}`"
-        v-model="values[field.id]"
+        :id="`field-${field.databaseId}`"
+        v-model="values[field.databaseId]"
         :type="field.type === 'EMAIL' ? 'email' : field.type === 'PHONE' ? 'tel' : 'text'"
         :placeholder="field.placeholder ?? ''"
         :required="field.isRequired"
-        :aria-invalid="errors[field.id] ? 'true' : undefined"
-        :aria-describedby="errors[field.id] ? `error-${field.id}` : undefined"
+        :aria-invalid="errors[field.databaseId] ? 'true' : undefined"
+        :aria-describedby="errors[field.databaseId] ? `error-${field.databaseId}` : undefined"
         class="gf-input"
-        :class="{ 'gf-input--error': errors[field.id] }"
+        :class="{ 'gf-input--error': errors[field.databaseId] }"
       />
 
       <!-- Textarea -->
       <textarea
         v-else-if="field.type === 'TEXTAREA'"
-        :id="`field-${field.id}`"
-        v-model="values[field.id]"
+        :id="`field-${field.databaseId}`"
+        v-model="values[field.databaseId]"
         :placeholder="field.placeholder ?? ''"
         :required="field.isRequired"
         :rows="field.rows ?? 5"
-        :aria-invalid="errors[field.id] ? 'true' : undefined"
-        :aria-describedby="errors[field.id] ? `error-${field.id}` : undefined"
+        :aria-invalid="errors[field.databaseId] ? 'true' : undefined"
+        :aria-describedby="errors[field.databaseId] ? `error-${field.databaseId}` : undefined"
         class="gf-input gf-textarea"
-        :class="{ 'gf-input--error': errors[field.id] }"
+        :class="{ 'gf-input--error': errors[field.databaseId] }"
       />
 
       <!-- Select -->
       <select
         v-else-if="field.type === 'SELECT'"
-        :id="`field-${field.id}`"
-        v-model="values[field.id]"
+        :id="`field-${field.databaseId}`"
+        v-model="values[field.databaseId]"
         :required="field.isRequired"
         class="gf-input gf-select"
-        :class="{ 'gf-input--error': errors[field.id] }"
+        :class="{ 'gf-input--error': errors[field.databaseId] }"
       >
         <option value="">Choose an option…</option>
         <option
@@ -208,12 +208,12 @@ async function handleSubmit() {
       </p>
 
       <p
-        v-if="errors[field.id]"
-        :id="`error-${field.id}`"
+        v-if="errors[field.databaseId]"
+        :id="`error-${field.databaseId}`"
         class="gf-error"
         role="alert"
       >
-        {{ errors[field.id] }}
+        {{ errors[field.databaseId] }}
       </p>
     </div>
 

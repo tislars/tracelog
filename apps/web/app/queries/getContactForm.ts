@@ -25,6 +25,7 @@ export const GF_GET_FORM = /* GraphQL */ `
       formFields {
         nodes {
           id
+          databaseId
           type
           layoutGridColumnSpan
 
@@ -112,7 +113,8 @@ export interface GfSelectChoice {
 }
 
 export interface GfFormField {
-  id: number
+  id: string
+  databaseId: number
   type: GfFieldType
   label?: string
   isRequired?: boolean
