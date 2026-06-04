@@ -25,6 +25,10 @@ RUN docker-php-ext-configure gd --with-jpeg --with-webp \
 
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
+RUN curl -sO https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar \
+    && chmod +x wp-cli.phar \
+    && mv wp-cli.phar /usr/local/bin/wp
+
 WORKDIR /var/www/html
 
 RUN chown -R www-data:www-data /var/www/html

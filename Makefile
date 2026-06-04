@@ -24,23 +24,26 @@ help: ## Show this help
 
 # ── First-time Setup ─────────────────────────────────────────────────────────
 .PHONY: setup
-setup: check-deps env-files cms-auth composer-install js-install cms-up ## Full first-time setup
+setup: check-deps env-files cms-auth composer-install js-install cms-up db-seed ## Full first-time setup (installs WordPress + seeds demo content)
 	@echo ""
 	@echo "  $(GREEN)$(BOLD)✓ Setup complete!$(RESET)"
 	@echo ""
-	@echo "  Next: open $(CYAN)http://localhost:8080$(RESET) to finish the WordPress install wizard."
-	@echo "  Then run $(CYAN)make dev$(RESET) to start the Nuxt dev server."
+	@echo "  WordPress:  $(CYAN)http://localhost:8080$(RESET)"
+	@echo "  WP Admin:   $(CYAN)http://localhost:8080/wp/wp-admin$(RESET)  (admin / admin)"
+	@echo ""
+	@echo "  Run $(CYAN)make dev$(RESET) to start the Nuxt frontend."
 	@echo ""
 
 # ── Prerequisite Checks ───────────────────────────────────────────────────────
 .PHONY: check-deps
 check-deps: ## Check required tools are installed
 	@echo "$(BOLD)Checking prerequisites...$(RESET)"
-	@command -v pnpm     >/dev/null 2>&1 || { echo "$(RED)✗ pnpm not found$(RESET)   → https://pnpm.io/installation"; exit 1; }
+	@command -v node     >/dev/null 2>&1 || { echo "$(RED)✗ node not found$(RESET)    → https://nodejs.org"; exit 1; }
+	@command -v npm      >/dev/null 2>&1 || { echo "$(RED)✗ npm not found$(RESET)     → https://nodejs.org"; exit 1; }
 	@command -v composer >/dev/null 2>&1 || { echo "$(RED)✗ composer not found$(RESET) → https://getcomposer.org"; exit 1; }
 	@command -v docker   >/dev/null 2>&1 || { echo "$(RED)✗ docker not found$(RESET)  → https://docs.docker.com/get-docker/"; exit 1; }
 	@docker compose version >/dev/null 2>&1 || { echo "$(RED)✗ docker compose v2 not found$(RESET)"; exit 1; }
-	@echo "  $(GREEN)✓ pnpm, composer, docker$(RESET)"
+	@echo "  $(GREEN)✓ node, npm, composer, docker$(RESET)"
 
 # ── Environment Files ─────────────────────────────────────────────────────────
 .PHONY: env-files
@@ -85,10 +88,10 @@ composer-install: ## Install PHP dependencies via Composer
 
 # ── JS Dependencies ───────────────────────────────────────────────────────────
 .PHONY: js-install
-js-install: ## Install JS dependencies via pnpm
+js-install: ## Install JS dependencies via npm
 	@echo "$(BOLD)Installing JS dependencies...$(RESET)"
-	pnpm install
-	@echo "  $(GREEN)✓ pnpm install complete$(RESET)"
+	cd $(WEB_DIR) && npm install
+	@echo "  $(GREEN)✓ npm install complete$(RESET)"
 
 # ── Docker / CMS ─────────────────────────────────────────────────────────────
 .PHONY: cms-up
@@ -106,6 +109,13 @@ cms-fresh: ## Wipe DB volumes and restart CMS
 	$(DC) down -v
 	$(DC) up -d --build
 
+.PHONY: db-seed
+db-seed: ## Install WordPress (if needed) and seed demo content
+	@bash $(CMS_DIR)/bin/seed.sh
+
+.PHONY: fresh
+fresh: cms-fresh db-seed ## Wipe database, reinstall WordPress, and reseed demo content
+
 .PHONY: cms-logs
 cms-logs: ## Tail CMS container logs
 	$(DC) logs -f
@@ -117,15 +127,15 @@ cms-shell: ## Open a shell in the PHP container
 # ── Development ───────────────────────────────────────────────────────────────
 .PHONY: dev
 dev: ## Start Nuxt dev server (CMS must already be running)
-	pnpm --filter web dev
+	cd $(WEB_DIR) && npm run dev
 
 .PHONY: build
 build: ## Build Nuxt for production
-	pnpm --filter web build
+	cd $(WEB_DIR) && npm run build
 
 .PHONY: preview
 preview: ## Preview the production Nuxt build
-	pnpm --filter web preview
+	cd $(WEB_DIR) && npm run preview
 
 # ── Utilities ─────────────────────────────────────────────────────────────────
 .PHONY: clean

@@ -2,7 +2,7 @@
   <div class="site">
     <header class="site-header">
       <div class="container site-header__inner">
-        <a href="/" class="site-header__logo">Tracelog</a>
+        <a href="/" class="site-header__logo">WP Headless POC</a>
         <nav class="site-header__nav">
           <a href="/">Home</a>
           <NuxtLink to="/team">Team</NuxtLink>
@@ -16,7 +16,7 @@
 
     <footer class="site-footer">
       <div class="container">
-        <p>&copy; {{ new Date().getFullYear() }} Tracelog</p>
+        <p>&copy; {{ new Date().getFullYear() }} WP Headless POC</p>
       </div>
     </footer>
   </div>

@@ -4,8 +4,8 @@ import {
   type GetGfFormResult,
 } from '~/queries/getContactForm'
 
-// Form ID — matches the Contact form created via GFAPI
-const FORM_ID = '2'
+// Form ID — the Contact form is always ID 1 on a fresh seed (see apps/cms/bin/seed-content.php)
+const FORM_ID = '1'
 
 const { data } = await useGraphQL<GetGfFormResult>(
   GF_GET_FORM,
@@ -47,7 +47,7 @@ useSeoHead(
           <ul class="contact-info__list">
             <li>
               <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-              hello@tracelog.dev
+              hello@wordpress-headless-poc.dev
             </li>
           </ul>
         </div>
